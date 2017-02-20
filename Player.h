@@ -18,6 +18,7 @@ public:
 	sf::Sound sound;
 
 
+
 private:
 	sf::RectangleShape body;
 	Animation animation;

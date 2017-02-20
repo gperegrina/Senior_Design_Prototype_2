@@ -22,8 +22,8 @@ int main() {
 	//Player character texture, rectangle bound to box
 	sf::Texture playerTexture;
 	//Assigning the sprite sheet to the player
-	playerTexture.loadFromFile("char_sprite_walk2.png");
-	Player player(&playerTexture, sf::Vector2u(3, 2), 0.3f, 100.0f);
+	playerTexture.loadFromFile("char_sprite_walk3.png");
+	Player player(&playerTexture, sf::Vector2u(3, 3), 0.3f, 100.0f);
 
 
 
@@ -58,6 +58,7 @@ int main() {
 	if (!player.soundBuf.loadFromFile("foot.wav"))
 		std::cout << "can't open sound file" << std::endl;
 	player.sound.setBuffer(player.soundBuf);
+	player.sound.setVolume(100);
 
 
 	//maybe put in a structure that takes the options menu
@@ -68,6 +69,7 @@ int main() {
 	//Playing Background Music
 	cout << "Playing background music" << endl;
 	audio.backgroundmusic1.play();
+	audio.backgroundmusic1.setVolume(25);
 
 
 	while (window.isOpen())

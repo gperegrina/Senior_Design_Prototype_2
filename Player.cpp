@@ -60,6 +60,22 @@ void Player::Update(float deltaTime)
 		else
 			faceRight = false;
 	}
+	if (movement.y < 0.0f) {
+		row = 2;
+
+	}
+	/*if (movement.y == 0.0f)
+	{
+		row = 0;
+	}
+	else
+	{
+		row = 2;
+		if (movement.y > 0.0f)
+			faceRight = false;
+		else
+			faceRight = true;
+	}*/
 
 	animation.Update(row, deltaTime, faceRight);
 	body.setTextureRect(animation.uvRect);
