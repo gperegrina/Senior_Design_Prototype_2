@@ -9,9 +9,12 @@ Player::Player(sf::Texture* texture, sf::Vector2u imageCount, float switchTime, 
 	faceRight = true;
 
 	body.setSize(sf::Vector2f(50.0f, 50.0f));
-	body.setPosition(206.0f, 206.0f);
+	body.setPosition(360.0f, 240.0f);
 	body.setTexture(texture);
 
+	view.setSize(720, 480);
+	view.setCenter(360.0f, 240.0f);
+	//view.zoom(0.6f);
 }
 
 
@@ -44,10 +47,34 @@ void Player::Update(float deltaTime)
 		movement.y += speed * deltaTime;
 	}
 
+//Switching map locations
+	const float playerposx = body.getPosition().x;
+	const float playerposy = body.getPosition().y;
+	std::cout << "x: " << playerposx << "     " << "y: " << playerposy << std::endl;
 
-	//insert a third row when moving up and down?
-	//include another if statment to move the sprite sheet
-
+	//checking if player is in east quadrant
+	if (body.getPosition().x > 720.0f ) {
+		std::cout << "out of bounds East" << std::endl;
+		view.setCenter(1080.0f, 240.0f);
+		//east = 1;
+	}
+	//south quadrant
+	else if (body.getPosition().y > 480.0f) {
+		std::cout << "out of bounds South" << std::endl;
+		view.setCenter(360.0f, 720.0f);
+	}
+	else if (body.getPosition().y < -50.0f) {
+		std::cout << "out of bounds North" << std::endl;
+		view.setCenter(360.0f, -240.0f);
+	}
+	else if (body.getPosition().x < -50.0f) {
+		std::cout << "out of bounds West" << std::endl;
+		view.setCenter(-360.0f, 240.0f);
+	}
+	else {
+		view.setCenter(360.0f, 240.0f);
+	}
+	
 	if (movement.x == 0.0f)
 	{
 		row = 0;

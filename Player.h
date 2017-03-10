@@ -16,8 +16,7 @@ public:
 	//Sound settings
 	sf::SoundBuffer soundBuf;
 	sf::Sound sound;
-
-
+	sf::View view;
 
 private:
 	sf::RectangleShape body;

@@ -4,45 +4,30 @@
 #include "Animation.h"
 #include "Player.h"
 #include "Audio.h"
+#include "Graphic.h"
 
 using namespace std;
 int exitgame = 0;
-void inittextures();
-
-//Work on separating textures
-//Problems with keyboard input being read as many times per second button was pressed
-
-
 
 int main() {
 	
 	sf::RenderWindow window(sf::VideoMode(720, 480), "Fight Hard Yeah! Tower Defense Game", sf::Style::Close | sf::Style::Resize);
 	Audio audio;
-	
+	Graphic graphics;
+	int flag = 0;
+
 	//Player character texture, rectangle bound to box
 	sf::Texture playerTexture;
-	//Assigning the sprite sheet to the player
-	playerTexture.loadFromFile("char_sprite_walk3.png");
+	playerTexture.loadFromFile("char_sprite_walk_swords.png");
 	Player player(&playerTexture, sf::Vector2u(3, 3), 0.3f, 100.0f);
 
+	//Assigning Player Footstep Sounds
+	if (!player.soundBuf.loadFromFile("foot.wav"))
+		std::cout << "can't open sound file" << std::endl;
+	player.sound.setBuffer(player.soundBuf);
+	player.sound.setVolume(100);
 
-
-	//Attempting to put the background Image in
-	sf::RectangleShape background(sf::Vector2f(720.0f, 480.0f));
-	background.setPosition(0.0f, 0.0f);
-
-	//Map
-	sf::Texture backgroundImage;
-	backgroundImage.loadFromFile("mario.png");
-	background.setTexture(&backgroundImage);
 	
-	//Transparent Tree
-	sf::RectangleShape backgroundTree(sf::Vector2f(150.0f, 150.0f));
-	backgroundTree.setPosition(330.0f, 180.0f);
-	sf::Texture treeTexture;
-	treeTexture.loadFromFile("transparent_tree.png");
-	backgroundTree.setTexture(&treeTexture);
-
 	//Menu
 	sf::RectangleShape menuImage(sf::Vector2f(720.0f, 480.0f));
 	menuImage.setPosition(0.0f, 0.0f);
@@ -53,16 +38,7 @@ int main() {
 	//Clock for sprite rotation
 	float deltaTime = 0.0f;
 	sf::Clock clock;
-	
-	//Assigning Player Footstep Sounds
-	if (!player.soundBuf.loadFromFile("foot.wav"))
-		std::cout << "can't open sound file" << std::endl;
-	player.sound.setBuffer(player.soundBuf);
-	player.sound.setVolume(100);
-
-
-	//maybe put in a structure that takes the options menu
-	//then put a flag 
+		
 	//if(music = 1) play
 	//if(music = 2) play
 
@@ -70,8 +46,7 @@ int main() {
 	cout << "Playing background music" << endl;
 	audio.backgroundmusic1.play();
 	audio.backgroundmusic1.setVolume(25);
-
-
+	
 	while (window.isOpen())
 	{
 		deltaTime = clock.restart().asSeconds();
@@ -83,9 +58,7 @@ int main() {
 			case sf::Event::Closed:
 				window.close();
 				break;
-
 			}
-
 		}
 		
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Escape))
@@ -104,30 +77,42 @@ int main() {
 					if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Escape)) {
 						return 0;
 					}
-
-					//window.clear();
-					//break;
 				}
-				//}
 			}
 		}
-
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Num1))
+		{
+			flag = 0;
+		}
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Num2))
+		{
+			flag = 1;
+		}
+		if (flag == 0)
+		{
+			playerTexture.loadFromFile("char_sprite_walk3.png");
+		}
+		else if (flag == 1)
+		{
+			playerTexture.loadFromFile("char_sprite_walk_swords.png");
+		}
+		
+		
+		window.setView(player.view);
 
 		player.Update(deltaTime);
 		window.clear(sf::Color(125, 125, 125));
-		window.draw(background);
+		window.draw(graphics.background);
+		window.draw(graphics.background2);
+		window.draw(graphics.background3);
+		window.draw(graphics.background4);
+		window.draw(graphics.background5);
+
 		player.Draw(window);
-		window.draw(backgroundTree);
+		window.draw(graphics.backgroundTree);
 		window.display();
 		}
 		return 0;
-}
-
-
-void inittextures() {
-
-	
-
 }
 
 
