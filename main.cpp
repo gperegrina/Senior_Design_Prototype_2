@@ -5,20 +5,57 @@
 #include "Player.h"
 #include "Audio.h"
 #include "Graphic.h"
+#include "Wall.h"
 
 using namespace std;
 int exitgame = 0;
 
 int main() {
 	
-	sf::RenderWindow window(sf::VideoMode(720, 480), "Fight Hard Yeah! Tower Defense Game", sf::Style::Close | sf::Style::Resize);
+	sf::RenderWindow window(sf::VideoMode(720, 480), "Fight Hard Yeah! Tower Defense Game", sf::Style::Close | sf::Style::Titlebar);
 	Audio audio;
 	Graphic graphics;
-	int flag = 0;
+	int flag = 0, counter = 0;
 
 	//Player character texture, rectangle bound to box
 	sf::Texture playerTexture;
 	playerTexture.loadFromFile("char_sprite_walk_swords.png");
+	
+
+	// Wall creation
+	vector<Wall>::const_iterator wallit;
+	vector<Wall> wallArray;
+
+	/*class Wall wall1;
+	sf::Texture textureWall;
+	textureWall.loadFromFile("wall.jpg");
+	wall1.rect.setTexture(&textureWall);
+	*/
+
+	class Wall wall1, wall2, wall3;
+	sf::Texture textureWall;
+	textureWall.loadFromFile("cave_top.png");
+	wall1.rect.setTexture(&textureWall);
+	sf::Texture textureWall2;
+	textureWall2.loadFromFile("cave_bottom_left.png");
+	wall2.rect.setTexture(&textureWall2);
+	sf::Texture textureWall3;
+	textureWall3.loadFromFile("cave_bottom_right.png");
+	wall3.rect.setTexture(&textureWall3);
+
+	wall1.rect.setPosition(0, 0);
+	wall1.rect.setSize(sf::Vector2f(720, 200));
+	wallArray.push_back(wall1);
+
+	wall2.rect.setPosition(0, 330);
+	wall2.rect.setSize(sf::Vector2f(150, 150));
+	wallArray.push_back(wall2);
+
+	wall3.rect.setPosition(150, 430);
+	wall3.rect.setSize(sf::Vector2f(570, 50));
+	wallArray.push_back(wall3);
+
+
 	Player player(&playerTexture, sf::Vector2u(3, 3), 0.3f, 100.0f);
 
 	//Assigning Player Footstep Sounds
@@ -27,13 +64,56 @@ int main() {
 	player.sound.setBuffer(player.soundBuf);
 	player.sound.setVolume(100);
 
-	
+
 	//Menu
 	sf::RectangleShape menuImage(sf::Vector2f(720.0f, 480.0f));
 	menuImage.setPosition(0.0f, 0.0f);
 	sf::Texture menuTexture;
 	menuTexture.loadFromFile("menu_1.png");
 	menuImage.setTexture(&menuTexture);
+
+	/*
+	for (int i = 0; i <= 720; i += 50) {
+		wall1.rect.setPosition(i, 0);
+		wallArray.push_back(wall1);
+		wall1.rect.setPosition(i, 450);
+		wallArray.push_back(wall1);
+		for (int j = 100; j <= 480; j += 50) {
+			wall1.rect.setPosition(0, j);
+			wallArray.push_back(wall1);
+			wall1.rect.setPosition(700, j);
+			wallArray.push_back(wall1);
+		}
+	}
+
+	for (int i = 100; i <= 300; i += 50) {
+		wall1.rect.setPosition(i, 100);
+		wallArray.push_back(wall1);
+	}
+	for (int i = 150; i <= 250; i += 50) {
+		wall1.rect.setPosition(100, i);
+		wallArray.push_back(wall1);
+	}
+	for (int i = 150; i <= 550; i += 50) {
+		wall1.rect.setPosition(i, 350);
+		wallArray.push_back(wall1);
+	}
+	for (int i = 400; i <= 600; i += 50) {
+		wall1.rect.setPosition(i, 100);
+		wallArray.push_back(wall1);
+	}
+	for (int i = 150; i <= 250; i += 50) {
+		wall1.rect.setPosition(600, i);
+		wallArray.push_back(wall1);
+	}
+	*/
+
+
+
+
+
+
+
 
 	//Clock for sprite rotation
 	float deltaTime = 0.0f;
@@ -59,27 +139,20 @@ int main() {
 				window.close();
 				break;
 			}
-		}
-		
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Escape))
-		{
-			exitgame += 1;
-			for (int i = 0; i < 1; i++) {
-				//while(window.isOpen()) {
-				cout << exitgame << endl;
-				std::cout << "Menu Being Displayed" << std::endl;
-				window.setVisible(true);
-				window.draw(menuImage);
-				window.display();
-				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Escape))
+			if (evnt.type == sf::Event::KeyPressed)
+			{
+				if (evnt.key.code == sf::Keyboard::Escape)
 				{
-					//Are you sure you want to exit?
-					if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Escape)) {
-						return 0;
-					}
+					std::cout << "Menu Being Displayed" << std::endl;
+					if (exitgame == 0)
+						exitgame = 1;
+					else
+						exitgame = 0;
 				}
 			}
 		}
+		
+		
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Num1))
 		{
 			flag = 0;
@@ -97,7 +170,73 @@ int main() {
 			playerTexture.loadFromFile("char_sprite_walk_swords.png");
 		}
 		
-		
+		window.setView(player.view);
+
+
+		//Player Wall Collision
+		counter = 0;
+		for (wallit = wallArray.begin(); wallit != wallArray.end(); wallit++) {
+			if (player.body.getGlobalBounds().intersects(wallArray[counter].rect.getGlobalBounds()))
+			{
+				//Hit wall
+				if (player.direction == 1) //Up
+				{
+					player.faceUp = false;
+					player.body.move(0, 1);
+				}
+				else if (player.direction == 2) //Down
+				{
+					player.faceDown = false;
+					player.body.move(0, -1);
+				}
+				else if (player.direction == 3) //Left
+				{
+					player.faceLeft = false;
+					player.body.move(1, 0);
+				}
+				else if (player.direction == 4) //Right
+				{
+					player.faceRight = false;
+					player.body.move(-1, 0);
+				}
+				else {}
+			}
+			counter++;
+		}
+
+		/*
+		counter = 0;
+		for (wallit = wallArray.begin(); wallit != wallArray.end(); wallit++) {
+			if (player.body.getGlobalBounds().intersects(wallArray[counter].rect.getGlobalBounds()))
+			{
+				//Hit wall
+				if (player.direction == 1) //Up
+				{
+					player.faceUp = false;
+					player.body.move(0, 1);
+				}
+				else if (player.direction == 2) //Down
+				{
+					player.faceDown = false;
+					player.body.move(0, -1);
+				}
+				else if (player.direction == 3) //Left
+				{
+					player.faceLeft = false;
+					player.body.move(1, 0);
+				}
+				else if (player.direction == 4) //Right
+				{
+					player.faceRight = false;
+					player.body.move(-1, 0);
+				}
+				else {}
+			}
+			counter++;
+		}
+		*/
+
+		//what is this?
 		window.setView(player.view);
 
 		player.Update(deltaTime);
@@ -108,8 +247,33 @@ int main() {
 		window.draw(graphics.background4);
 		window.draw(graphics.background5);
 
+		//Draw Wall
+		counter = 0;
+		for (wallit = wallArray.begin(); wallit != wallArray.end(); wallit++)
+		{
+			wallArray[counter].update();
+
+			window.draw(wallArray[counter].rect);
+			window.draw(wallArray[counter].sprite);
+			counter++;
+		}
+
+
+
 		player.Draw(window);
+
+		window.draw(wall1.sprite);
+		window.draw(wall2.sprite);
+		window.draw(wall3.sprite);
+
 		window.draw(graphics.backgroundTree);
+
+		//displaying Escape Menu
+		if (exitgame == 1)
+			window.draw(menuImage);
+		else
+			menuImage.setTexture(&menuTexture);
+
 		window.display();
 		}
 		return 0;

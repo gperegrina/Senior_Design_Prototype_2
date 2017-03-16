@@ -8,7 +8,7 @@ Player::Player(sf::Texture* texture, sf::Vector2u imageCount, float switchTime, 
 	row = 0;
 	faceRight = true;
 
-	body.setSize(sf::Vector2f(50.0f, 50.0f));
+	body.setSize(sf::Vector2f(45.0f, 45.0f));
 	body.setPosition(360.0f, 240.0f);
 	body.setTexture(texture);
 
@@ -24,33 +24,91 @@ Player::~Player()
 
 void Player::Update(float deltaTime)
 {
+	movement.x = 0.0f;
+	movement.y = 0.0f;
+
+	//if (sf::Event::KeyPressed && sf::Keyboard::A) 
+
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A) || sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
+		sound.play();
+		if (faceLeft == true) {
+			std::cout << "moving left" << std::endl;
+			movement.x -= ((speed * deltaTime));		//Gerardo: added + 4 to move in blocks
+			direction = 3;
+			faceLeft = true; faceDown = true;
+			faceRight = true; faceUp = true;
+		}
+	}
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::D) || sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
+		if (faceRight == true) {
+			std::cout << "moving right" << std::endl;
+			movement.x += speed * deltaTime;
+			direction = 4;
+			faceLeft = true; faceDown = true;
+			faceRight = true; faceUp = true;
+		}
+	}
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::W) || sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
+		if (faceUp == true) {
+			std::cout << "moving up" << std::endl;
+			movement.y -= speed * deltaTime;
+			direction = 1;
+			faceLeft = true; faceDown = true;
+			faceRight = true; faceUp = true;
+		}
+	}
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::S) || sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
+		if (faceDown == true) {
+			std::cout << "moving down" << std::endl;
+			movement.y += speed * deltaTime;
+			direction = 2;
+			faceLeft = true; faceDown = true;
+			faceRight = true; faceUp = true;
+		}
+	}
+	else {/*Player not moving*/ }
+
+	/*
 	sf::Vector2f movement(0.0f, 0.0f);
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
 		//while (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {}
 		sound.play();
 		std::cout << "moving left" << std::endl;
 		movement.x -= speed * deltaTime;
+		direction = 3;
+		faceLeft = true; faceDown = true;
+		faceRight = true; faceUp = true;
 	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
 		sound.play();
 		std::cout << "moving right" << std::endl;
 		movement.x += speed * deltaTime;
+		direction = 4;
+		faceLeft = true; faceDown = true;
+		faceRight = true; faceUp = true;
 	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
 		sound.play();
 		std::cout << "moving up" << std::endl;
 		movement.y -= speed * deltaTime;
+		direction = 1;
+		faceLeft = true; faceDown = true;
+		faceRight = true; faceUp = true;
 	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {
 		sound.play();
 		std::cout << "moving down" << std::endl;
 		movement.y += speed * deltaTime;
+		direction = 2;
+		faceLeft = true; faceDown = true;
+		faceRight = true; faceUp = true;
 	}
+	*/
 
 //Switching map locations
 	const float playerposx = body.getPosition().x;
 	const float playerposy = body.getPosition().y;
-	std::cout << "x: " << playerposx << "     " << "y: " << playerposy << std::endl;
+	//std::cout << "x: " << playerposx << "     " << "y: " << playerposy << std::endl;
 
 	//checking if player is in east quadrant
 	if (body.getPosition().x > 720.0f ) {

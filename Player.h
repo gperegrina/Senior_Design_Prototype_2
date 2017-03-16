@@ -18,12 +18,25 @@ public:
 	sf::Sound sound;
 	sf::View view;
 
-private:
+	sf::Vector2f movement;
 	sf::RectangleShape body;
 	Animation animation;
 	unsigned int row;
 	float speed;
-	bool faceRight;
+	int direction = 0;
+	bool face;
+	bool faceRight = true;
+	bool faceLeft = true;
+	bool faceUp = true;
+	bool faceDown = true;
+
+
+private:
+	//sf::RectangleShape body;
+	//Animation animation;
+	//unsigned int row;
+	//float speed;
+	//bool faceRight;
 
 
 
