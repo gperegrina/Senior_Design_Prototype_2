@@ -6,7 +6,7 @@ Player::Player(sf::Texture* texture, sf::Vector2u imageCount, float switchTime, 
 {
 	this->speed = speed;
 	row = 0;
-	faceRight = true;
+	face = true;
 
 	body.setSize(sf::Vector2f(45.0f, 45.0f));
 	body.setPosition(360.0f, 240.0f);
@@ -141,9 +141,9 @@ void Player::Update(float deltaTime)
 	{
 		row = 1;
 		if (movement.x > 0.0f)
-			faceRight = true;
+			face = true;
 		else
-			faceRight = false;
+			face = false;
 	}
 	if (movement.y < 0.0f) {
 		row = 2;
@@ -162,7 +162,7 @@ void Player::Update(float deltaTime)
 			faceRight = true;
 	}*/
 
-	animation.Update(row, deltaTime, faceRight);
+	animation.Update(row, deltaTime, face);
 	body.setTextureRect(animation.uvRect);
 	body.move(movement);
 
